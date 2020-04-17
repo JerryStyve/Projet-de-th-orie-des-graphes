@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1587103685 source:c:\users\jerry\documents\projet de théorie des graphes\projet de théorie des graphes\theorie_des_graphes\main.c
+	<stdio.h>
+	<stdlib.h>
+
