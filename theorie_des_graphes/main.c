@@ -78,21 +78,6 @@ graphe lire_graphe_fichier(char* nom_fichier) //Fonction de lecture
     fgets(chaine, TAILLE_MAX, fichier);
     stock.nbrDarc = atoi(chaine);
 
-
-    /*fgets(chaine, TAILLE_MAX, fichier);
-    automate.nbrEtatsInitiaux = atoi(chaine);
-    automate.EtatInitial = recuperation(chaine, automate.nbrEtatsInitiaux); //Fonction pour r?cup?rer les ?tats initiaux situ?s apr?s le nombre d'?tats initiaux dans le fichier texte
-
-
-    fgets(chaine, TAILLE_MAX, fichier);
-    automate.nbrEtatsTerminaux = atoi(chaine);
-    automate.EtatTerminal = recuperation(chaine, automate.nbrEtatsTerminaux); //Fonction pour r?cup?rer les ?tats terminaux situ?s apr?s le nombre d'?tats terminaux dans le fichier texte
-
-
-    fgets(chaine, TAILLE_MAX, fichier);
-    automate.nbrTransitions = atoi(chaine);*/
-
-
     //Récupération des arcs via la structure arc
 
     tableau_arc tab;
@@ -104,13 +89,13 @@ graphe lire_graphe_fichier(char* nom_fichier) //Fonction de lecture
          fgets(chaine,TAILLE_MAX,fichier); //On stocke l'état initial
          nouv.EtatInitial=atoi(chaine);
 
-         fgets(chaine,TAILLE_MAX,fichier); //Puis la valeur
-         nouv.valeur=atoi(chaine);
-
 
          fgets(chaine,TAILLE_MAX,fichier); //Puis l'état terminal
          nouv.EtatTerminal=atoi(chaine);
 
+
+          fgets(chaine,TAILLE_MAX,fichier); //Puis la valeur
+         nouv.valeur=atoi(chaine);
 
        tab[i]=nouv; //On stocke la variable contenant les 3 informations dans une case du tableau
     }
@@ -134,43 +119,8 @@ void affichage_graphe(graphe stock)
     printf("Informations du graphe : \n");
 
 
-
-
-
-            /*printf("Il y a %d arcs dans le graphe : {",stock.nbrDarc);
-
-            for(i=0;i<stock.nbrDarc;i++)
-            {
-                printf("muni des valeurs %d \n",stock.tab.valeur[i]); //On affiche les symboles de l'alphabet dans l'ordre comme convenu
-            }
-            printf("%c}\n",alphabet[i]);*/
-
-
-
-
-
             printf("Il y a %d sommets ",stock.nbrDeSommet);
 
-            /*for(i=0;i<automate.nbrEtats-1;i++)
-            {
-                printf("%d,",i); //On affiche les ?tats de l'automate
-            }
-            printf("%d}\n",i);
-
-            printf("Il y a %d Etat(s) initial(aux) : {",automate.nbrEtatsInitiaux);
-            for(i=0;i<automate.nbrEtatsInitiaux-1;i++)
-            {
-                printf("%c,",automate.EtatInitial[i]); //On affiche ici tous les ?tats initiaux de l'automate
-            }
-            printf("%c}\n",automate.EtatInitial[i]);
-
-            printf("Il y a %d Etat(s) terminal(aux) : {",automate.nbrEtatsTerminaux);
-            for(i=0;i<automate.nbrEtatsTerminaux-1;i++)
-            {
-                printf("%c,",automate.EtatTerminal[i]); //On affiche ici tous les états terminaux de l'automate
-            }
-            printf("%c}\n",automate.EtatTerminal[i]);*/
-////////////////////////////
 
             printf("Il y a %d arc(s))\n\n",stock.nbrDarc);
 
@@ -192,19 +142,83 @@ void affichage_graphe(graphe stock)
 
 }
 
+int** matrices_d_adjacence(graphe stock)
+{
+
+    int i,j,k;
+    int** matrice;
+
+    matrice=malloc(sizeof(int*)*stock.nbrDeSommet);
+
+    for(j=0;j<stock.nbrDeSommet;j++){
+    matrice[j]=malloc(sizeof(int)*stock.nbrDeSommet);
+    }
+
+
+    for(i=0;i<stock.nbrDeSommet;i++){
+        for(j=0; j<stock.nbrDeSommet;j++){
+            matrice[i][j]=0;
+        }
+    }
+
+
+    for (i=0; i<stock.nbrDarc; i++)
+        {
+
+        for(j=0; j<stock.nbrDeSommet;j++)
+            {
+
+
+            if (stock.tab[i].EtatTerminal==j)//verification de l'état d'adjacence effectif entre les sommets courants
+                {
+                    matrice[stock.tab[i].EtatInitial][j]=1;
+
+                }
+        }
+        }
+            return matrice;
+
+}
+
+void affichage_des_matrices(int** matrice,graphe stock)
+{
+    int i,j,k;
+
+      for (k=0; k< stock.nbrDeSommet;k++)// boucle de la 1ere ligne affichant les sommets
+        {
+        printf("  %d",k);
+        }
+        printf("\n");
+        for(i=0;i<stock.nbrDeSommet;i++)
+        {
+                        printf("%d",i);
+
+            for(j=0;j<stock.nbrDeSommet;j++){
+            printf("  %d",matrice[i][j]);
+        }
+            printf("\n");
+
+        }
+
+
+}
 
 int main()
 {
     int numgraphe;
+    int** matrice;
+
     printf("Quel graphe voulez-vous utiliser ? "); //Récupération du numéro du fichier à ouvrir
     scanf("%d", &numgraphe);
 
-    char nomFichier[50];/*="L3-B3-#.txt"*/; //On stocke dans un tableau le nom du fichier texte qui est le m?me pour tous sauf le num?ro symbolis? ici par #
-    snprintf(nomFichier, 50, "L3-B3-%d.txt", numgraphe); //On met le num?ro donn? par l'utilisateur ? la place du # et on a le nom complet du fichier ? ouvrir
+    char nomFichier[50];/*="L3-B3-#.txt"*/; //On stocke dans un tableau le nom du fichier texte qui est le même pour tous sauf le num?ro symbolis? ici par #
+    snprintf(nomFichier, 50, "L3-B3-%d.txt", numgraphe); //On met le numéro donné par l'utilisateur à la place du # et on a le nom complet du fichier ? ouvrir
 
     graphe courent;
     courent=lire_graphe_fichier(nomFichier);//on lit le graphe
     affichage_graphe(courent);// et on l'affiche
+    matrice=matrices_d_adjacence(courent);
+    affichage_des_matrices(matrice,courent);
 
     return 0;
 }
