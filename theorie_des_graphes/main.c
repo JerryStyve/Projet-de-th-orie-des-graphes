@@ -141,6 +141,7 @@ void affichage_graphe(graphe stock)
 
 
 }
+//calcul de la matrice  d'adjacence
 
 int** matrices_d_adjacence(graphe stock)
 {
@@ -180,6 +181,69 @@ int** matrices_d_adjacence(graphe stock)
 
 }
 
+// matrice des valeurs
+
+
+
+//calcul des rangs
+
+int* calcul_des_rangs(int** matrice, graphe stock) {
+
+     int* rang;
+     int* tampon;
+     int i,j,k,l,n,z,t;
+     int m=0;
+
+    rang=malloc(sizeof(int)*stock.nbrDeSommet);
+    tampon=malloc(sizeof(int)*stock.nbrDeSommet);
+
+
+    for (n=0; n<stock.nbrDeSommet;n++){//initialisation du tableau des rangs à -1
+        rang[n]=-1;
+    }
+for(z=0;z<stock.nbrDeSommet;z++){
+
+for (n=0; n<stock.nbrDeSommet;n++){//initialisation du tableau tampon à 0
+        tampon[n]=0;}
+
+for(j=0;j<stock.nbrDeSommet;j++){//on fait la somme de chaque colonne pour ensuite vérifier celle qui sont nulle
+    for(i=0;i<stock.nbrDeSommet;i++){
+        tampon[j]=tampon[j] + matrice[i][j];
+    }
+}
+
+for(k=0;k<stock.nbrDeSommet;k++){
+    if(tampon[k]==0){//vérification !
+        for(l=0;l<stock.nbrDeSommet;l++){
+            matrice[k][l]=0;
+        }
+        if (rang[k]==-1){//attribution du rang si la somme sur les colonnes de la colonne de la matrice d'adjacence du sommet est nulle.
+            rang[k]=m;
+            m++;
+        }
+    }
+}
+}
+
+return rang;
+
+}
+
+//affichage des rangs
+
+void affich_rang(int* rang, graphe stock){
+    int p,r;
+    printf("\n le tableau des rangs est : \n");
+    for(r=0;r<stock.nbrDeSommet;r++){
+        printf("%d ",r);
+    }
+    printf("\n");
+for(p=0; p<stock.nbrDeSommet; p++){
+    printf("%d ", rang[p]);
+}
+}
+
+//affichage des matrices
 void affichage_des_matrices(int** matrice,graphe stock)
 {
     int i,j,k;
@@ -207,6 +271,7 @@ int main()
 {
     int numgraphe;
     int** matrice;
+    int* tab_rang;
 
     printf("Quel graphe voulez-vous utiliser ? "); //Récupération du numéro du fichier à ouvrir
     scanf("%d", &numgraphe);
@@ -219,6 +284,8 @@ int main()
     affichage_graphe(courent);// et on l'affiche
     matrice=matrices_d_adjacence(courent);
     affichage_des_matrices(matrice,courent);
+    tab_rang=calcul_des_rangs(matrice,courent);
+    affich_rang(tab_rang,courent);
 
     return 0;
 }
