@@ -229,6 +229,87 @@ return rang;
 
 }
 
+//Matrice des valeurs
+
+int** matrice_des_valeurs(graphe stock){
+
+int** mat_val;
+int i,j,k,l,m;
+
+mat_val=malloc(sizeof(int*)*stock.nbrDeSommet);//creation dynamique de la matrice 2D qui contiendra nos valeurs
+for(i=0;i<stock.nbrDeSommet;i++){
+
+    mat_val[i]=malloc(sizeof(int)*stock.nbrDeSommet);
+}
+
+for(i=0; i<stock.nbrDeSommet; i++){//on initialise le tableau à -1 pour plus de commodité
+    for(j=0;j<stock.nbrDeSommet; j++){
+        mat_val[i][j]=-1;
+    }
+}
+
+for(i=0;i<stock.nbrDarc;i++){
+    k=stock.tab[i].EtatInitial;
+    l=stock.tab[i].EtatTerminal;
+    m=stock.tab[i].valeur;
+
+    mat_val[k][l]=m;// on intègre les valeurs des arcs dans la matrice
+}
+
+/*for(i=0;i<stock.nbrDeSommet;i++){
+    for(j=0;j<stock.nbrDeSommet;j++){
+
+        if(mat_val[i][j]==NULL){
+            mat_val[i][j]='.';//on marque les sommets non reliés par un point
+        }
+    }
+}*/
+//test
+ /*printf("\n");
+for(i=0; i<stock.nbrDeSommet;i++){
+    for(j=0; j<stock.nbrDeSommet;j++){
+        printf(" %d",mat_val[i][j]);
+    }
+    printf("\n");
+}*/
+
+    return mat_val;
+}
+
+//affichage de la matrice des valeurs
+
+void affiche_mat_val(int** mat_val,graphe stock){
+
+int i,j;
+
+    printf("\n");
+
+printf("matrice des valeurs");
+
+printf("\n");
+
+for(i=0;i<stock.nbrDeSommet;i++){//1ERE LIGNE
+printf("  %d",i);
+}
+printf("\n");
+
+for(i=0;i<stock.nbrDeSommet;i++){
+
+                printf("%d",i);//affichage de la colonne indicatrice de gauche
+
+    for(j=0;j<stock.nbrDeSommet;j++){
+    if(mat_val[i][j]==-1){//transformation des -1 en point
+        printf(" . ");//point
+    }
+
+    else{
+        printf(" %d ",mat_val[i][j]);
+    }
+}
+    printf("\n");
+
+}
+}
 //affichage des rangs
 
 void affich_rang(int* rang, graphe stock){
@@ -247,6 +328,13 @@ for(p=0; p<stock.nbrDeSommet; p++){
 void affichage_des_matrices(int** matrice,graphe stock)
 {
     int i,j,k;
+
+    printf("\n");
+
+    printf("La matrice adjacente est:");
+
+    printf("\n");
+
 
       for (k=0; k< stock.nbrDeSommet;k++)// boucle de la 1ere ligne affichant les sommets
         {
@@ -270,9 +358,9 @@ void affichage_des_matrices(int** matrice,graphe stock)
 int main()
 {
     int numgraphe;
-    int** matrice;
+    int** matrice_adj;
     int* tab_rang;
-
+    int**mat_val;
     printf("Quel graphe voulez-vous utiliser ? "); //Récupération du numéro du fichier à ouvrir
     scanf("%d", &numgraphe);
 
@@ -282,10 +370,13 @@ int main()
     graphe courent;
     courent=lire_graphe_fichier(nomFichier);//on lit le graphe
     affichage_graphe(courent);// et on l'affiche
-    matrice=matrices_d_adjacence(courent);
-    affichage_des_matrices(matrice,courent);
-    tab_rang=calcul_des_rangs(matrice,courent);
+    matrice_adj=matrices_d_adjacence(courent);
+    affichage_des_matrices(matrice_adj,courent);
+    tab_rang=calcul_des_rangs(matrice_adj,courent);
     affich_rang(tab_rang,courent);
+    mat_val=matrice_des_valeurs(courent);
+    affiche_mat_val(mat_val,courent);
+
 
     return 0;
 }
